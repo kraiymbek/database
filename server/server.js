@@ -22,6 +22,7 @@ app.post('/todos',(req,res)=>{
     });
 });
 
+
 app.get('/todos',(req,res)=>{
     Todo.find().then(todos=>{
         res.send({todos});
@@ -29,7 +30,7 @@ app.get('/todos',(req,res)=>{
 });
 
 
-app.listen(3000,()=>{
+app.listen(3001,()=>{
     console.log('Startde on port 3000');
 });
 
