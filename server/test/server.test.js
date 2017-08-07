@@ -99,3 +99,23 @@ describe('GET /todos/:id',()=>{
     });
 });
 
+describe('DELETE/ todos:id',()=>{
+    it('it should remove todo by id',(done)=>{
+        let id =todos[0]._id.toHexString();
+        request(app)
+            .delete(`/todos/${id}`)
+            .expect(200)
+            .expect(res=>{
+                expect(res.body.todo.text).toBe(todos[0].text)
+            })
+            .end((err,res)=>{
+                if(err) return done(err);
+
+                Todo.findById(id).then(todo=>{
+                    expect(todo).toNotExist();
+                    done()
+                }).catch(e=>{done(e)});
+            });
+    });
+});
+
