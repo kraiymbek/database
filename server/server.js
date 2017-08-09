@@ -8,7 +8,7 @@ let {mongoose} = require('./db/mongoose');
 let {Todo} = require('./models/todo');
 let {User} = require('./models/user');
 
-let port = process.env.PORT || 3001;
+let port = process.env.PORT || 3000;
 
 let app = express();
 
@@ -84,6 +84,23 @@ app.patch('/todos/:id',(req,res)=>{
         if(!todo) return res.status(404).send({message: 'is not found'});
         res.send({todo});
     }).catch(e => {res.status(400).send(e)});
+
+});
+
+///USER REQUESTS
+
+app.post('/users',(req,res)=>{
+    let body = _.pick(req.body,['email','password']);
+    let user = new User(body);
+
+    user.save()
+        .then( () => {
+        return user.generateAuthToken();
+    })
+        .then((token)=>{
+            res.header('x-auth',token).send(user);
+        })
+        .catch(e => res.status(400).send(e));
 
 });
 
