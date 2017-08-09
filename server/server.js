@@ -9,7 +9,7 @@ let {Todo} = require('./models/todo');
 let {User} = require('./models/user');
 let {authenticate} = require('./middleware/authenticate');
 
-let port = process.env.PORT || 3000;
+let port = process.env.PORT || 3001;
 
 let app = express();
 
@@ -113,6 +113,22 @@ app.get('/users/me', authenticate, (req,res)=>{
 
 
 });
+
+app.post('/users/login',(req,res)=>{
+    let body = _.pick(req.body,['email','password']);
+
+    return User.findByCredentials(body.email,body.password).then((user)=>{
+
+        return user.generateAuthToken().then(token => {
+            res.header('x-auth', token).send(user);
+        });
+
+    }).catch(e => {
+        res.status(400).send();
+    })
+
+    });
+
 
 
 
